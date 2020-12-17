@@ -1,0 +1,9 @@
+name = "tada"
+description = "Ada Tetris"
+version = "0.0.0"
+
+authors = ["Loic Bellonnet-Mottet", "Thomas Lupin", "Vincent Parizet"]
+maintainers = ["Loic Bellonnet-Mottet <loic.bellonnet-mottet@epita.fr>", "Thomas Lupin <thomas.lupin@epita.fr>", "Vincent Parizet <vincent.parizet@epita.fr>"]
+maintainers-logins = ["Badoum92", "TheToto", "Vincent-P"]
+
+executables = ["tada"]
