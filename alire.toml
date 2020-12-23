@@ -7,3 +7,6 @@ maintainers = ["Loic Bellonnet-Mottet <loic.bellonnet-mottet@epita.fr>", "Thomas
 maintainers-logins = ["Badoum92", "TheToto", "Vincent-P"]
 
 executables = ["tada"]
+
+[[depends-on]]  # This line was added by `alr with`
+sdlada = "*"  # This line was added by `alr with`
