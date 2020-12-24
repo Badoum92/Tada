@@ -22,5 +22,6 @@ private
 
    Now : Uint64 := 0;
    Last : Uint64;
+   Init : Boolean := False;
 
 end Time;

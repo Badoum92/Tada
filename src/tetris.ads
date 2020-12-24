@@ -10,6 +10,6 @@ package Tetris is
    Grid_Offset_X : constant := 2;
    Grid_Offset_Y : constant := 2;
 
-   procedure Display_Grid (R : in out Renderer);
+   procedure Grid_Display (R : in out Renderer);
 
 end Tetris;

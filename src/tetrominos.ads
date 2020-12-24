@@ -139,8 +139,8 @@ package Tetrominos is
               "....",
 
               "...." &
-              "..XX" &
               ".XX." &
+              "XX.." &
               "....",
 
               ".X.." &
@@ -149,8 +149,8 @@ package Tetrominos is
               "....",
 
               "...." &
-              "..XX" &
               ".XX." &
+              "XX.." &
               "...."),
       Col => (
          Red => 250,
