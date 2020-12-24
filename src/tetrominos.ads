@@ -3,8 +3,11 @@ with SDL.Video.Palettes; use SDL.Video.Palettes;
 
 package Tetrominos is
 
+   type Rotation_Index is range 1 .. 4;
+   type Rotation_Array is array (Rotation_Index) of String (1 .. 16);
+
    type Tetromino_Base is record
-      Str : String (1 .. 16);
+      Rot : Rotation_Array;
       Col : Colour;
    end record;
 
@@ -12,28 +15,59 @@ package Tetrominos is
       Base : Tetromino_Base;
       X : Integer;
       Y : Integer;
+      Rot : Rotation_Index := 1;
    end record;
 
-   procedure Tetromino_Display (R : in out SDL.Video.Renderers.Renderer; T : Tetromino);
+   procedure Tetromino_Display (R : in out Renderer; T : Tetromino);
+   procedure Tetromino_Rotate (T : in out Tetromino);
 
    Tetromino_I : constant Tetromino_Base := (
-      Str => "..X." &
-             "..X." &
-             "..X." &
-             "..X.",
+      Rot => ("..X." &
+              "..X." &
+              "..X." &
+              "..X.",
+
+              "...." &
+              "...." &
+              "XXXX" &
+              "....",
+
+              "..X." &
+              "..X." &
+              "..X." &
+              "..X.",
+
+              "...." &
+              "...." &
+              "XXXX" &
+              "...."),
       Col => (
          Red => 250,
          Green => 206,
          Blue => 140,
-         Alpha => 255
-      )
+         Alpha => 255)
    );
 
    Tetromino_T : constant Tetromino_Base := (
-      Str => "..X." &
-             ".XX." &
-             "..X." &
-             "....",
+      Rot => ("...X" &
+              "..XX" &
+              "...X" &
+              "....",
+
+              "...." &
+              "..X." &
+              ".XXX" &
+              "....",
+
+              ".X.." &
+              ".XX." &
+              ".X.." &
+              "....",
+
+              ".XXX" &
+              "..X." &
+              "...." &
+              "...."),
       Col => (
          Red => 130,
          Green => 255,
@@ -43,10 +77,25 @@ package Tetrominos is
    );
 
    Tetromino_O : constant Tetromino_Base := (
-      Str => ".XX." &
-             ".XX." &
-             "...." &
-             "....",
+      Rot => (".XX." &
+              ".XX." &
+              "...." &
+              "....",
+
+              ".XX." &
+              ".XX." &
+              "...." &
+              "....",
+
+              ".XX." &
+              ".XX." &
+              "...." &
+              "....",
+
+              ".XX." &
+              ".XX." &
+              "...." &
+              "...."),
       Col => (
          Red => 255,
          Green => 80,
@@ -56,10 +105,25 @@ package Tetrominos is
    );
 
    Tetromino_Z : constant Tetromino_Base := (
-      Str => "..X." &
-             ".XX." &
-             ".X.." &
-             "....",
+      Rot => ("..X." &
+              ".XX." &
+              ".X.." &
+              "....",
+
+              "...." &
+              ".XX." &
+              "..XX" &
+              "....",
+
+              "..X." &
+              ".XX." &
+              ".X.." &
+              "....",
+
+              "...." &
+              ".XX." &
+              "..XX" &
+              "...."),
       Col => (
          Red => 72,
          Green => 255,
@@ -69,10 +133,25 @@ package Tetrominos is
    );
 
    Tetromino_S : constant Tetromino_Base := (
-      Str => ".X.." &
-             ".XX." &
-             "..X." &
-             "....",
+      Rot => (".X.." &
+              ".XX." &
+              "..X." &
+              "....",
+
+              "...." &
+              "..XX" &
+              ".XX." &
+              "....",
+
+              ".X.." &
+              ".XX." &
+              "..X." &
+              "....",
+
+              "...." &
+              "..XX" &
+              ".XX." &
+              "...."),
       Col => (
          Red => 250,
          Green => 224,
@@ -82,10 +161,25 @@ package Tetrominos is
    );
 
    Tetromino_L : constant Tetromino_Base := (
-      Str => ".X.." &
-             ".X.." &
-             ".XX." &
-             "....",
+      Rot => (".X.." &
+              ".X.." &
+              ".XX." &
+              "....",
+
+              "...." &
+              ".XXX" &
+              ".X.." &
+              "....",
+
+              ".XX." &
+              "..X." &
+              "..X." &
+              "....",
+
+              "...." &
+              "..X." &
+              "XXX." &
+              "...."),
       Col => (
          Red => 27,
          Green => 120,
@@ -95,10 +189,25 @@ package Tetrominos is
    );
 
    Tetromino_J : constant Tetromino_Base := (
-      Str => "..X." &
-             "..X." &
-             ".XX." &
-             "....",
+      Rot => ("..X." &
+              "..X." &
+              ".XX." &
+              "....",
+
+              "...." &
+              ".X.." &
+              ".XXX" &
+              "....",
+
+              ".XX." &
+              ".X.." &
+              ".X.." &
+              "....",
+
+              "...." &
+              "XXX." &
+              "..X." &
+              "...."),
       Col => (
          Red => 187,
          Green => 27,
