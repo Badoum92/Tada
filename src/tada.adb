@@ -12,8 +12,6 @@ with C_Types; use C_Types;
 
 procedure Tada is
 
-   Should_Quit : Boolean := False;
-
    Width   : constant := 1280;
    Height  : constant := 720;
 
@@ -71,7 +69,7 @@ begin
    end if;
 
    SDL.Video.Windows.Makers.Create (Win      => Window,
-                                    Title    => "Draw a pixel",
+                                    Title    => "Tada - Tetris in Ada",
                                     X        => 0,
                                     Y        => 0,
                                     Width    => Width,
@@ -86,12 +84,12 @@ begin
    TS := (Tetromino_S, 2 + 16, 22, 1);
    TL := (Tetromino_L, 2 + 20, 22, 1);
    TJ := (Tetromino_J, 2 + 24, 22, 1);
+   Grid_Init;
 
    loop
       Time.Update;
 
-      Should_Quit := Poll_Events;
-      if Should_Quit then
+      if Poll_Events then
          Window.Finalize;
          SDL.Finalise;
          return;
