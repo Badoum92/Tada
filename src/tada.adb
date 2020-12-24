@@ -3,9 +3,12 @@ with SDL.Video.Windows.Makers;
 with SDL.Video.Renderers.Makers;
 with SDL.Events.Events;
 with SDL.Events.Keyboards; use SDL.Events.Keyboards;
+
 with Interfaces.C; use Interfaces.C;
 with Tetrominos; use Tetrominos;
 with Tetris; use Tetris;
+with Time;
+with C_Types; use C_Types;
 
 procedure Tada is
 
@@ -82,6 +85,8 @@ begin
    TJ := (Tetromino_J, 12 + 24, 0, 1);
 
    loop
+      Time.Update;
+
       Should_Quit := Poll_Events;
       if Should_Quit then
          Window.Finalize;
