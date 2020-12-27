@@ -23,6 +23,7 @@ package Grid is
    function Grid_Piece_Fits (T : Tetromino) return Boolean;
 
    procedure Grid_Init;
+   procedure Grid_Lock_Piece (T : Tetromino);
    procedure Grid_Display (R : in out Renderer);
 
 end Grid;

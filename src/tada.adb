@@ -68,8 +68,10 @@ begin
       Renderer.Set_Draw_Colour ((0, 0, 0, 255));
       Renderer.Fill (Rectangle => (0, 0, Width, Height));
 
+      Game_Update;
       Game_Display (Renderer);
 
       Window.Update_Surface;
+      delay 0.05;
    end loop;
 end Tada;

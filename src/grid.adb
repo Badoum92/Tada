@@ -10,7 +10,7 @@ package body Grid is
 
       if X < 0 or else Y < 0 then
          return False;
-      elsif X >= Grid_Width or else Y >= Grid_Width then
+      elsif X >= Grid_Width or else Y >= Grid_Height then
          return False;
       elsif Grid (Y + 1) (X + 1).Set then
          return False;
@@ -38,6 +38,19 @@ package body Grid is
    begin
       Grid := (others => (others => (Set => False, Col => (0, 0, 0, 255))));
    end Grid_Init;
+
+   procedure Grid_Lock_Piece (T : Tetromino) is
+      Block : Character;
+   begin
+      for Y in 0 .. 3 loop
+         for X in 0 .. 3 loop
+            Block := T.Base.Rot (T.Rot) (Y * 4 + X + 1);
+            if Block = 'X' then
+               Grid (T.Y + Y + 1) (T.X + X + 1) := (True, T.Base.Col);
+            end if;
+         end loop;
+      end loop;
+   end Grid_Lock_Piece;
 
    procedure Grid_Display (R : in out Renderer) is
    begin
