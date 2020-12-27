@@ -1,15 +1,14 @@
 with SDL.Video.Renderers; use SDL.Video.Renderers;
 with SDL.Video.Palettes; use SDL.Video.Palettes;
+with Tetrominos; use Tetrominos;
 
-package Tetris is
+package Grid is
 
    Block_Size : constant := 25;
    Outline_Size : constant := 1;
 
-   Grid_Width : constant := 12;
-   Grid_Height : constant := 18;
-   Grid_Offset_X : constant := 2;
-   Grid_Offset_Y : constant := 2;
+   Grid_Width : constant := 10;
+   Grid_Height : constant := 20;
 
    type Block is record
       Set : Boolean := False;
@@ -20,8 +19,10 @@ package Tetris is
    type Grid_Array is array (1 .. Grid_Height) of Grid_Line;
    Grid : Grid_Array;
 
+   function Grid_Block_Fits (Block : Character; X, Y : Integer) return Boolean;
+   function Grid_Piece_Fits (T : Tetromino) return Boolean;
+
    procedure Grid_Init;
-   procedure Grid_Preview_Display (R : in out Renderer);
    procedure Grid_Display (R : in out Renderer);
 
-end Tetris;
+end Grid;

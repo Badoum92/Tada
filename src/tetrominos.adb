@@ -1,4 +1,4 @@
-with Tetris; use Tetris;
+with Grid; use Grid;
 with Interfaces.C; use Interfaces.C;
 
 package body Tetrominos is

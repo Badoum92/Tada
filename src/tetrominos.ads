@@ -216,4 +216,12 @@ package Tetrominos is
       )
    );
 
+   type Tetrominos_Index is range 1 .. 7;
+   type Tetrominos_Array is array (Tetrominos_Index) of Tetromino_Base;
+   Tetromino_Bases : Tetrominos_Array := (
+      Tetromino_I, Tetromino_T, Tetromino_O, Tetromino_Z,
+      Tetromino_S, Tetromino_L, Tetromino_J
+   );
+
+
 end Tetrominos;
