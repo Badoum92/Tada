@@ -2,22 +2,35 @@ with Ada.Numerics.Discrete_Random;
 
 package body Game is
 
-   function Get_Random_Piece return Tetromino_Base is
+   function Game_Get_Random_Piece return Tetromino_Base is
       package Rand is new Ada.Numerics.Discrete_Random (Tetrominos_Index);
       use Rand;
       G : Generator;
    begin
       Reset (G);
       return Tetromino_Bases (Random (G));
-   end Get_Random_Piece;
+   end Game_Get_Random_Piece;
 
    procedure Game_Spawn_Piece is
    begin
-      Cur_Piece := (Base => Get_Random_Piece,
-                    X => Grid_Width / 2 - 2,
-                    Y => 0,
+      Cur_Piece := Next_Piece;
+      Cur_Piece.X := Grid_Width / 2 - 2;
+      Cur_Piece.Y := 0;
+
+      Next_Piece := (Base => Game_Get_Random_Piece,
+                    X => Grid_Width + 2,
+                    Y => 2,
                     Rot => 1);
    end Game_Spawn_Piece;
+
+   procedure Game_Reset is
+   begin
+      Next_Piece := (Base => Game_Get_Random_Piece,
+                    X => Grid_Width + 2,
+                    Y => 2,
+                    Rot => 1);
+      Game_Init;
+   end Game_Reset;
 
    procedure Game_Init is
    begin
@@ -90,6 +103,7 @@ package body Game is
    begin
       Grid_Display (R);
       Tetromino_Display (R, Cur_Piece);
+      Tetromino_Display (R, Next_Piece);
    end Game_Display;
 
    procedure Game_Update is

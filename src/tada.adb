@@ -48,7 +48,7 @@ begin
                                     Flags  => 0);
    SDL.Video.Renderers.Makers.Create (Renderer, Window.Get_Surface);
 
-   Game_Init;
+   Game_Reset;
 
    loop
       Time.Update;

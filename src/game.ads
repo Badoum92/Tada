@@ -9,7 +9,7 @@ package Game is
 
    type Piece_Action is (Left, Right, Down, Rotate);
 
-   function Get_Random_Piece return Tetromino_Base;
+   function Game_Get_Random_Piece return Tetromino_Base;
    procedure Game_Spawn_Piece;
 
    procedure Game_Handle_Input (Key : Scan_Codes);
@@ -17,6 +17,7 @@ package Game is
 
    procedure Game_Update_Score (Nb_Lines : Natural);
 
+   procedure Game_Reset;
    procedure Game_Init;
    procedure Game_Display (R : in out Renderer);
    procedure Game_Update;
@@ -24,6 +25,7 @@ package Game is
 private
 
    Cur_Piece : Tetromino;
+   Next_Piece : Tetromino;
    Level : Uint64;
    Score : Uint64;
    Total_Delay : Uint64;
