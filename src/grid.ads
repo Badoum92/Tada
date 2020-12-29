@@ -21,9 +21,13 @@ package Grid is
 
    function Grid_Block_Fits (Block : Character; X, Y : Integer) return Boolean;
    function Grid_Piece_Fits (T : Tetromino) return Boolean;
+   procedure Grid_Lock_Piece (T : Tetromino);
+
+   function Grid_Is_Line_Full (Line_Idx : Positive) return Boolean;
+   procedure Grid_Remove_Line (Line_Idx : Positive);
+   function Grid_Remove_Full_Lines return Natural;
 
    procedure Grid_Init;
-   procedure Grid_Lock_Piece (T : Tetromino);
    procedure Grid_Display (R : in out Renderer);
 
 end Grid;

@@ -19,12 +19,6 @@ procedure Tada is
    Window   : SDL.Video.Windows.Window;
    Renderer : SDL.Video.Renderers.Renderer;
 
-   Position_X : constant Integer := 0;
-   Position_Y : constant Integer := 0;
-
-   Total_Delay : constant Uint64 := 500;
-   Current_Delay : Uint64 := 0;
-
    function Poll_Events return Boolean is
       use type SDL.Events.Event_Types;
       Event : SDL.Events.Events.Events;

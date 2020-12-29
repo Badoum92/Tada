@@ -23,6 +23,8 @@ package body Game is
    begin
       Grid_Init;
       Game_Spawn_Piece;
+      Level := 1;
+      Score := 0;
       Total_Delay := 1000;
       Current_Delay := 0;
    end Game_Init;
@@ -45,6 +47,7 @@ package body Game is
       Old_X : constant Integer := Cur_Piece.X;
       Old_Y : constant Integer := Cur_Piece.Y;
       Old_Rot : constant Rotation_Index := Cur_Piece.Rot;
+      Nb_Lines : Natural := 0;
    begin
       if action = Left then
          Cur_Piece.X := Cur_Piece.X - 1;
@@ -63,11 +66,25 @@ package body Game is
 
          if action = Down then
             Grid_Lock_Piece (Cur_Piece);
+            Nb_Lines := Grid_Remove_Full_Lines;
+            Game_Update_Score (Nb_Lines);
             Game_Spawn_Piece;
          end if;
       end if;
    end Game_Move_Piece;
 
+   procedure Game_Update_Score (Nb_Lines : Natural) is
+   begin
+      if Nb_Lines = 1 then
+         Score := Score + 100 * Level;
+      elsif Nb_Lines = 2 then
+         Score := Score + 300 * Level;
+      elsif Nb_Lines = 3 then
+         Score := Score + 500 * Level;
+      elsif Nb_Lines = 4 then
+         Score := Score + 800 * Level;
+      end if;
+   end Game_Update_Score;
 
    procedure Game_Display (R : in out Renderer) is
    begin

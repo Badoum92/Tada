@@ -33,6 +33,44 @@ package body Grid is
       return True;
    end Grid_Piece_Fits;
 
+   function Grid_Is_Line_Full (Line_Idx : Positive) return Boolean is
+      Line : constant Grid_Line := Grid (Line_Idx);
+   begin
+      for I in Line'Range loop
+         if not Line (I).Set then
+            return False;
+         end if;
+      end loop;
+      return True;
+   end Grid_Is_Line_Full;
+
+   procedure Grid_Remove_Line (Line_Idx : Positive) is
+      First_Line : Grid_Line := Grid (Grid'First);
+   begin
+      if Line_Idx > 1 then
+         for L in reverse 2 .. Line_Idx loop
+            for I in Grid (L)'Range loop
+               Grid (L) (I) := Grid (L - 1) (I);
+            end loop;
+         end loop;
+      end if;
+
+      for I in First_Line'Range loop
+         First_Line (I).Set := False;
+      end loop;
+   end Grid_Remove_Line;
+
+   function Grid_Remove_Full_Lines return Natural is
+      Nb_Lines : Natural := 0;
+   begin
+      for L in Grid'Range loop
+         if Grid_Is_Line_Full (L) then
+            Grid_Remove_Line (L);
+            Nb_Lines := Nb_Lines + 1;
+         end if;
+      end loop;
+      return Nb_Lines;
+   end Grid_Remove_Full_Lines;
 
    procedure Grid_Init is
    begin
