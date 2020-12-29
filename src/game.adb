@@ -1,5 +1,7 @@
 with Ada.Numerics.Discrete_Random;
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Game is
 
    function Game_Get_Random_Piece return Tetromino_Base is
@@ -38,6 +40,7 @@ package body Game is
       Game_Spawn_Piece;
       Level := 1;
       Score := 0;
+      Cur_Lines := 0;
       Total_Delay := 1000;
       Current_Delay := 0;
    end Game_Init;
@@ -45,18 +48,21 @@ package body Game is
    procedure Game_Handle_Input (Key : Scan_Codes) is
    begin
       if Key = Scan_Code_Left then
-         Game_Move_Piece (Left);
+         Game_Move_Piece_Proc (Left);
       elsif Key = Scan_Code_Right then
-         Game_Move_Piece (Right);
+         Game_Move_Piece_Proc (Right);
       elsif Key = Scan_Code_Down then
-         Game_Move_Piece (Down);
-         Current_Delay := 0;
+         Game_Move_Piece_Proc (Down);
       elsif Key = Scan_Code_Up then
-         Game_Move_Piece (Rotate);
+         Game_Move_Piece_Proc (Rotate);
+      elsif Key = Scan_Code_Space then
+         while Game_Move_Piece (Down) loop
+            null;
+         end loop;
       end if;
    end Game_Handle_Input;
 
-   procedure Game_Move_Piece (action : Piece_Action) is
+   function Game_Move_Piece (action : Piece_Action) return Boolean is
       Old_X : constant Integer := Cur_Piece.X;
       Old_Y : constant Integer := Cur_Piece.Y;
       Old_Rot : constant Rotation_Index := Cur_Piece.Rot;
@@ -80,11 +86,22 @@ package body Game is
          if action = Down then
             Grid_Lock_Piece (Cur_Piece);
             Nb_Lines := Grid_Remove_Full_Lines;
+            Cur_Lines := Cur_Lines + Nb_Lines;
             Game_Update_Score (Nb_Lines);
             Game_Spawn_Piece;
+            return False;
          end if;
       end if;
+
+      return True;
    end Game_Move_Piece;
+
+   procedure Game_Move_Piece_Proc (action : Piece_Action) is
+      Status : Boolean := False;
+   begin
+      Status := Game_Move_Piece (action);
+      pragma Unreferenced (Status);
+   end Game_Move_Piece_Proc;
 
    procedure Game_Update_Score (Nb_Lines : Natural) is
    begin
@@ -106,14 +123,29 @@ package body Game is
       Tetromino_Display (R, Next_Piece);
    end Game_Display;
 
+   procedure Game_Speed_Up is
+      Speed_Up_Factor : Uint64 := 275;
+   begin
+      if Cur_Lines >= Lines_To_Next_Level then
+         Cur_Lines := Cur_Lines - Lines_To_Next_Level;
+         Speed_Up_Factor := Speed_Up_Factor / (Level + 1);
+         if Total_Delay > Speed_Up_Factor then
+            Level := Level + 1;
+            Total_Delay := Total_Delay - Speed_Up_Factor;
+            Put_Line (Uint64'Image (Total_Delay));
+         end if;
+      end if;
+   end Game_Speed_Up;
+
    procedure Game_Update is
    begin
       Current_Delay := Current_Delay + Delta_Time;
       if Current_Delay >= Total_Delay then
-         Game_Move_Piece (Down);
+         Game_Move_Piece_Proc (Down);
          if Current_Delay /= 0 then
             Current_Delay := Current_Delay - Total_Delay;
          end if;
+         Game_Speed_Up;
       end if;
    end Game_Update;
 

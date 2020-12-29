@@ -13,21 +13,25 @@ package Game is
    procedure Game_Spawn_Piece;
 
    procedure Game_Handle_Input (Key : Scan_Codes);
-   procedure Game_Move_Piece (action : Piece_Action);
-
-   procedure Game_Update_Score (Nb_Lines : Natural);
+   function Game_Move_Piece (action : Piece_Action) return Boolean;
+   procedure Game_Move_Piece_Proc (action : Piece_Action);
 
    procedure Game_Reset;
    procedure Game_Init;
    procedure Game_Display (R : in out Renderer);
+   procedure Game_Update_Score (Nb_Lines : Natural);
+   procedure Game_Speed_Up;
    procedure Game_Update;
 
 private
+
+   Lines_To_Next_Level : constant := 15;
 
    Cur_Piece : Tetromino;
    Next_Piece : Tetromino;
    Level : Uint64;
    Score : Uint64;
+   Cur_Lines : Natural;
    Total_Delay : Uint64;
    Current_Delay : Uint64;
 

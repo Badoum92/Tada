@@ -66,6 +66,6 @@ begin
       Game_Display (Renderer);
 
       Window.Update_Surface;
-      delay 0.05;
+      delay 0.01;
    end loop;
 end Tada;
