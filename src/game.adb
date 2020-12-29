@@ -1,8 +1,12 @@
 with Ada.Numerics.Discrete_Random;
-
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Game is
+
+   function Game_Is_Game_Over return Boolean is
+   begin
+      return Game_Over;
+   end Game_Is_Game_Over;
 
    function Game_Get_Random_Piece return Tetromino_Base is
       package Rand is new Ada.Numerics.Discrete_Random (Tetrominos_Index);
@@ -23,6 +27,12 @@ package body Game is
                     X => Grid_Width + 2,
                     Y => 2,
                     Rot => 1);
+
+      if not Grid_Piece_Fits (Cur_Piece) then
+         Game_Over := True;
+         Put_Line ("GAME OVER");
+         Put_Line ("Press R to start a new game");
+      end if;
    end Game_Spawn_Piece;
 
    procedure Game_Reset is
@@ -38,11 +48,13 @@ package body Game is
    begin
       Grid_Init;
       Game_Spawn_Piece;
+      Game_Over := False;
       Level := 1;
       Score := 0;
       Cur_Lines := 0;
       Total_Delay := 1000;
       Current_Delay := 0;
+      Game_Display_Terminal;
    end Game_Init;
 
    procedure Game_Handle_Input (Key : Scan_Codes) is
@@ -114,7 +126,26 @@ package body Game is
       elsif Nb_Lines = 4 then
          Score := Score + 800 * Level;
       end if;
+
+      if Nb_Lines /= 0 then
+         Game_Display_Terminal;
+      end if;
    end Game_Update_Score;
+
+   procedure Game_Display_Terminal is
+   begin
+      Put (ASCII.ESC & "[2J" & ASCII.ESC & "[1;1H");
+      Put_Line ("--- Tada ---");
+      Put_Line ("Left arrow: move left");
+      Put_Line ("Right arrow: move right");
+      Put_Line ("Down arrow: move down");
+      Put_Line ("Up arrow: rotate");
+      Put_Line ("Space bar: fast down");
+      Put_Line ("R: restart");
+      Put_Line ("------------");
+      Put_Line ("Score: " & Uint64'Image (Score));
+      Put_Line ("Level: " & Uint64'Image (Level));
+   end Game_Display_Terminal;
 
    procedure Game_Display (R : in out Renderer) is
    begin
@@ -132,7 +163,7 @@ package body Game is
          if Total_Delay > Speed_Up_Factor then
             Level := Level + 1;
             Total_Delay := Total_Delay - Speed_Up_Factor;
-            Put_Line (Uint64'Image (Total_Delay));
+            Game_Display_Terminal;
          end if;
       end if;
    end Game_Speed_Up;

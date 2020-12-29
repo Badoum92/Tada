@@ -22,14 +22,9 @@ package Tetrominos is
    procedure Tetromino_Rotate (T : in out Tetromino);
 
    Tetromino_I : constant Tetromino_Base := (
-      Rot => ("..X." &
-              "..X." &
-              "..X." &
-              "..X.",
-
-              "...." &
-              "...." &
+      Rot => ("...." &
               "XXXX" &
+              "...." &
               "....",
 
               "..X." &
@@ -38,9 +33,14 @@ package Tetrominos is
               "..X.",
 
               "...." &
-              "...." &
               "XXXX" &
-              "...."),
+              "...." &
+              "....",
+
+              "..X." &
+              "..X." &
+              "..X." &
+              "..X."),
       Col => (
          Red => 250,
          Green => 206,

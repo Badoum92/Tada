@@ -3,6 +3,8 @@ with SDL.Video.Windows.Makers;
 with SDL.Video.Renderers.Makers;
 with SDL.Events.Events;
 with SDL.Events.Keyboards; use SDL.Events.Keyboards;
+with SDL.TTFs;
+with SDL.TTFs.Makers;
 
 with Interfaces.C; use Interfaces.C;
 with Tetrominos; use Tetrominos;
@@ -13,7 +15,7 @@ with Time;
 
 procedure Tada is
 
-   Width   : constant := Block_Size * (Grid_Width + 10);
+   Width   : constant := Block_Size * (Grid_Width + 8);
    Height  : constant := Block_Size * Grid_Height;
 
    Window   : SDL.Video.Windows.Window;
@@ -26,8 +28,13 @@ procedure Tada is
       while SDL.Events.Events.Poll (Event) loop
          if Event.Common.Event_Type = SDL.Events.Quit then
             return True;
-         elsif Event.Common.Event_Type = SDL.Events.Keyboards.Key_Down then
-            Game_Handle_Input (Event.Keyboard.Key_Sym.Scan_Code);
+         elsif Event.Common.Event_Type = Key_Down then
+            if Event.Keyboard.Key_Sym.Scan_Code = Scan_Code_R then
+               Game_Reset;
+            end if;
+            if not Game_Is_Game_Over then
+               Game_Handle_Input (Event.Keyboard.Key_Sym.Scan_Code);
+            end if;
          end if;
       end loop;
       return False;
@@ -62,7 +69,9 @@ begin
       Renderer.Set_Draw_Colour ((0, 0, 0, 255));
       Renderer.Fill (Rectangle => (0, 0, Width, Height));
 
-      Game_Update;
+      if not Game_Is_Game_Over then
+         Game_Update;
+      end if;
       Game_Display (Renderer);
 
       Window.Update_Surface;

@@ -9,6 +9,8 @@ package Game is
 
    type Piece_Action is (Left, Right, Down, Rotate);
 
+   function Game_Is_Game_Over return Boolean;
+
    function Game_Get_Random_Piece return Tetromino_Base;
    procedure Game_Spawn_Piece;
 
@@ -18,6 +20,7 @@ package Game is
 
    procedure Game_Reset;
    procedure Game_Init;
+   procedure Game_Display_Terminal;
    procedure Game_Display (R : in out Renderer);
    procedure Game_Update_Score (Nb_Lines : Natural);
    procedure Game_Speed_Up;
@@ -26,6 +29,8 @@ package Game is
 private
 
    Lines_To_Next_Level : constant := 15;
+
+   Game_Over : Boolean;
 
    Cur_Piece : Tetromino;
    Next_Piece : Tetromino;
