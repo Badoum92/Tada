@@ -1,6 +1,6 @@
 with SDL.Video.Renderers; use SDL.Video.Renderers;
 with SDL.Video.Palettes; use SDL.Video.Palettes;
-with Tetrominos; use Tetrominos;
+with Tetromino;
 
 package Grid is
 
@@ -16,18 +16,18 @@ package Grid is
    end record;
 
    type Grid_Line is array (1 .. Grid_Width) of Block;
-   type Grid_Array is array (1 .. Grid_Height) of Grid_Line;
-   Grid : Grid_Array;
+   type Grid_T is array (1 .. Grid_Height) of Grid_Line;
 
-   function Grid_Block_Fits (Block : Character; X, Y : Integer) return Boolean;
-   function Grid_Piece_Fits (T : Tetromino) return Boolean;
-   procedure Grid_Lock_Piece (T : Tetromino);
+   function Block_Fits (G : Grid_T; Block : Character; X, Y : Integer)
+      return Boolean;
+   function Piece_Fits (G : Grid_T; T : Tetromino.Tetromino_T) return Boolean;
+   procedure Lock_Piece (G : in out Grid_T; T : Tetromino.Tetromino_T);
 
-   function Grid_Is_Line_Full (Line_Idx : Positive) return Boolean;
-   procedure Grid_Remove_Line (Line_Idx : Positive);
-   function Grid_Remove_Full_Lines return Natural;
+   function Is_Line_Full (G : Grid_T; Line_Idx : Positive) return Boolean;
+   procedure Remove_Line (G : in out Grid_T; Line_Idx : Positive);
+   function Remove_Full_Lines (G : in out Grid_T) return Natural;
 
-   procedure Grid_Init;
-   procedure Grid_Display (R : in out Renderer);
+   procedure Init (G : in out Grid_T);
+   procedure Display (G : Grid_T; R : in out Renderer);
 
 end Grid;

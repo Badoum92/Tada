@@ -1,138 +1,129 @@
-with Ada.Numerics.Discrete_Random;
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Game is
 
-   function Game_Is_Game_Over return Boolean is
+   function Is_Game_Over (G : Game_T) return Boolean is
    begin
-      return Game_Over;
-   end Game_Is_Game_Over;
+      return G.Game_Over;
+   end Is_Game_Over;
 
-   function Game_Get_Random_Piece return Tetromino_Base is
-      package Rand is new Ada.Numerics.Discrete_Random (Tetrominos_Index);
-      use Rand;
-      G : Generator;
+   procedure Spawn_Piece (G : in out Game_T) is
    begin
-      Reset (G);
-      return Tetromino_Bases (Random (G));
-   end Game_Get_Random_Piece;
+      G.Cur_Piece := G.Next_Piece;
+      G.Cur_Piece.X := Grid.Grid_Width / 2 - 2;
+      G.Cur_Piece.Y := 0;
 
-   procedure Game_Spawn_Piece is
-   begin
-      Cur_Piece := Next_Piece;
-      Cur_Piece.X := Grid_Width / 2 - 2;
-      Cur_Piece.Y := 0;
-
-      Next_Piece := (Base => Game_Get_Random_Piece,
-                    X => Grid_Width + 2,
+      G.Next_Piece := (Base => Tetromino.Get_Random_Piece,
+                    X => Grid.Grid_Width + 2,
                     Y => 2,
                     Rot => 1);
 
-      if not Grid_Piece_Fits (Cur_Piece) then
-         Game_Over := True;
+      if not Grid.Piece_Fits (G.Game_Grid, G.Cur_Piece) then
+         G.Game_Over := True;
          Put_Line ("GAME OVER");
          Put_Line ("Press R to start a new game");
       end if;
-   end Game_Spawn_Piece;
+   end Spawn_Piece;
 
-   procedure Game_Reset is
+   procedure Reset (G : in out Game_T) is
    begin
-      Next_Piece := (Base => Game_Get_Random_Piece,
-                    X => Grid_Width + 2,
+      G.Next_Piece := (Base => Tetromino.Get_Random_Piece,
+                    X => Grid.Grid_Width + 2,
                     Y => 2,
                     Rot => 1);
-      Game_Init;
-   end Game_Reset;
+      Init (G);
+   end Reset;
 
-   procedure Game_Init is
+   procedure Init (G : in out Game_T) is
    begin
-      Grid_Init;
-      Game_Spawn_Piece;
-      Game_Over := False;
-      Level := 1;
-      Score := 0;
-      Cur_Lines := 0;
-      Total_Delay := 1000;
-      Current_Delay := 0;
-      Game_Display_Terminal;
-   end Game_Init;
+      Grid.Init (G.Game_Grid);
+      Spawn_Piece (G);
+      G.Game_Over := False;
+      G.Level := 1;
+      G.Score := 0;
+      G.Cur_Lines := 0;
+      G.Total_Delay := 1000;
+      G.Current_Delay := 0;
+      Display_Terminal (G);
+   end Init;
 
-   procedure Game_Handle_Input (Key : Scan_Codes) is
+   procedure Handle_Input (G : in out Game_T; Key : Scan_Codes) is
    begin
       if Key = Scan_Code_Left then
-         Game_Move_Piece_Proc (Left);
+         Move_Piece_Proc (G, Left);
       elsif Key = Scan_Code_Right then
-         Game_Move_Piece_Proc (Right);
+         Move_Piece_Proc (G, Right);
       elsif Key = Scan_Code_Down then
-         Game_Move_Piece_Proc (Down);
+         Move_Piece_Proc (G, Down);
       elsif Key = Scan_Code_Up then
-         Game_Move_Piece_Proc (Rotate);
+         Move_Piece_Proc (G, Rotate);
       elsif Key = Scan_Code_Space then
-         while Game_Move_Piece (Down) loop
+         while Move_Piece (G, Down) loop
             null;
          end loop;
       end if;
-   end Game_Handle_Input;
+   end Handle_Input;
 
-   function Game_Move_Piece (action : Piece_Action) return Boolean is
-      Old_X : constant Integer := Cur_Piece.X;
-      Old_Y : constant Integer := Cur_Piece.Y;
-      Old_Rot : constant Rotation_Index := Cur_Piece.Rot;
+   function Move_Piece (G : in out Game_T; action : Piece_Action)
+      return Boolean is
+      Old_X : constant Integer := G.Cur_Piece.X;
+      Old_Y : constant Integer := G.Cur_Piece.Y;
+      Old_Rot : constant Tetromino.Rotation_Index := G.Cur_Piece.Rot;
       Nb_Lines : Natural := 0;
    begin
       if action = Left then
-         Cur_Piece.X := Cur_Piece.X - 1;
+         G.Cur_Piece.X := G.Cur_Piece.X - 1;
       elsif action = Right then
-         Cur_Piece.X := Cur_Piece.X + 1;
+         G.Cur_Piece.X := G.Cur_Piece.X + 1;
       elsif action = Down then
-         Cur_Piece.Y := Cur_Piece.Y + 1;
+         G.Cur_Piece.Y := G.Cur_Piece.Y + 1;
       elsif action = Rotate then
-         Tetromino_Rotate (Cur_Piece);
+         Tetromino.Rotate (G.Cur_Piece);
       end if;
 
-      if not Grid_Piece_Fits (Cur_Piece) then
-         Cur_Piece.X := Old_X;
-         Cur_Piece.Y := Old_Y;
-         Cur_Piece.Rot := Old_Rot;
+      if not Grid.Piece_Fits (G.Game_Grid, G.Cur_Piece) then
+         G.Cur_Piece.X := Old_X;
+         G.Cur_Piece.Y := Old_Y;
+         G.Cur_Piece.Rot := Old_Rot;
 
          if action = Down then
-            Grid_Lock_Piece (Cur_Piece);
-            Nb_Lines := Grid_Remove_Full_Lines;
-            Cur_Lines := Cur_Lines + Nb_Lines;
-            Game_Update_Score (Nb_Lines);
-            Game_Spawn_Piece;
+            Grid.Lock_Piece (G.Game_Grid, G.Cur_Piece);
+            Nb_Lines := Grid.Remove_Full_Lines (G.Game_Grid);
+            G.Cur_Lines := G.Cur_Lines + Nb_Lines;
+            Update_Score (G, Nb_Lines);
+            Spawn_Piece (G);
             return False;
          end if;
       end if;
 
       return True;
-   end Game_Move_Piece;
+   end Move_Piece;
 
-   procedure Game_Move_Piece_Proc (action : Piece_Action) is
+   procedure Move_Piece_Proc (G : in out Game_T; action : Piece_Action) is
       Status : Boolean := False;
    begin
-      Status := Game_Move_Piece (action);
+      Status := Move_Piece (G, action);
       pragma Unreferenced (Status);
-   end Game_Move_Piece_Proc;
+   end Move_Piece_Proc;
 
-   procedure Game_Update_Score (Nb_Lines : Natural) is
+   procedure Update_Score (G : in out Game_T; Nb_Lines : Natural) is
    begin
       if Nb_Lines = 1 then
-         Score := Score + 100 * Level;
+         G.Score := G.Score + 100 * G.Level;
       elsif Nb_Lines = 2 then
-         Score := Score + 300 * Level;
+         G.Score := G.Score + 300 * G.Level;
       elsif Nb_Lines = 3 then
-         Score := Score + 500 * Level;
+         G.Score := G.Score + 500 * G.Level;
       elsif Nb_Lines = 4 then
-         Score := Score + 800 * Level;
+         G.Score := G.Score + 800 * G.Level;
       end if;
 
       if Nb_Lines /= 0 then
-         Game_Display_Terminal;
+         Display_Terminal (G);
       end if;
-   end Game_Update_Score;
+   end Update_Score;
 
-   procedure Game_Display_Terminal is
+   procedure Display_Terminal (G : Game_T) is
    begin
       Put (ASCII.ESC & "[2J" & ASCII.ESC & "[1;1H");
       Put_Line ("--- Tada ---");
@@ -143,41 +134,41 @@ package body Game is
       Put_Line ("Space bar: fast down");
       Put_Line ("R: restart");
       Put_Line ("------------");
-      Put_Line ("Score: " & Uint64'Image (Score));
-      Put_Line ("Level: " & Uint64'Image (Level));
-   end Game_Display_Terminal;
+      Put_Line ("Score: " & Uint64'Image (G.Score));
+      Put_Line ("Level: " & Uint64'Image (G.Level));
+   end Display_Terminal;
 
-   procedure Game_Display (R : in out Renderer) is
+   procedure Display (G : Game_T; R : in out Renderer) is
    begin
-      Grid_Display (R);
-      Tetromino_Display (R, Cur_Piece);
-      Tetromino_Display (R, Next_Piece);
-   end Game_Display;
+      Grid.Display (G.Game_Grid, R);
+      Tetromino.Display (G.Cur_Piece, R);
+      Tetromino.Display (G.Next_Piece, R);
+   end Display;
 
-   procedure Game_Speed_Up is
-      Speed_Up_Factor : Uint64 := 275;
+   procedure Speed_Up (G : in out Game_T) is
+      Speed_Up_Factor : Uint64 := 500;
    begin
-      if Cur_Lines >= Lines_To_Next_Level then
-         Cur_Lines := Cur_Lines - Lines_To_Next_Level;
-         Speed_Up_Factor := Speed_Up_Factor / (Level + 1);
-         if Total_Delay > Speed_Up_Factor then
-            Level := Level + 1;
-            Total_Delay := Total_Delay - Speed_Up_Factor;
-            Game_Display_Terminal;
+      if G.Cur_Lines >= Lines_To_Next_Level then
+         G.Cur_Lines := G.Cur_Lines - Lines_To_Next_Level;
+         Speed_Up_Factor := Speed_Up_Factor / (G.Level + 1);
+         if G.Total_Delay > Speed_Up_Factor then
+            G.Level := G.Level + 1;
+            G.Total_Delay := G.Total_Delay - Speed_Up_Factor;
+            Display_Terminal (G);
          end if;
       end if;
-   end Game_Speed_Up;
+   end Speed_Up;
 
-   procedure Game_Update is
+   procedure Update (G : in out Game_T) is
    begin
-      Current_Delay := Current_Delay + Delta_Time;
-      if Current_Delay >= Total_Delay then
-         Game_Move_Piece_Proc (Down);
-         if Current_Delay /= 0 then
-            Current_Delay := Current_Delay - Total_Delay;
+      G.Current_Delay := G.Current_Delay + Time.Get_Delta_Time;
+      if G.Current_Delay >= G.Total_Delay then
+         Move_Piece_Proc (G, Down);
+         if G.Current_Delay /= 0 then
+            G.Current_Delay := G.Current_Delay - G.Total_Delay;
          end if;
-         Game_Speed_Up;
+         Speed_Up (G);
       end if;
-   end Game_Update;
+   end Update;
 
 end Game;

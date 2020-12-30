@@ -1,7 +1,7 @@
 with SDL.Video.Renderers; use SDL.Video.Renderers;
 with SDL.Video.Palettes; use SDL.Video.Palettes;
 
-package Tetrominos is
+package Tetromino is
 
    type Rotation_Index is range 1 .. 4;
    type Rotation_Array is array (Rotation_Index) of String (1 .. 16);
@@ -11,17 +11,18 @@ package Tetrominos is
       Col : Colour;
    end record;
 
-   type Tetromino is record
+   type Tetromino_T is record
       Base : Tetromino_Base;
       X : Integer;
       Y : Integer;
       Rot : Rotation_Index := 1;
    end record;
 
-   procedure Tetromino_Display (R : in out Renderer; T : Tetromino);
-   procedure Tetromino_Rotate (T : in out Tetromino);
+   function Get_Random_Piece return Tetromino_Base;
+   procedure Display (T : Tetromino_T; R : in out Renderer);
+   procedure Rotate (T : in out Tetromino_T);
 
-   Tetromino_I : constant Tetromino_Base := (
+   I_Tetromino : constant Tetromino_Base := (
       Rot => ("...." &
               "XXXX" &
               "...." &
@@ -48,7 +49,7 @@ package Tetrominos is
          Alpha => 255)
    );
 
-   Tetromino_T : constant Tetromino_Base := (
+   T_Tetromino : constant Tetromino_Base := (
       Rot => ("...." &
               ".XXX" &
               "..X." &
@@ -76,7 +77,7 @@ package Tetrominos is
       )
    );
 
-   Tetromino_O : constant Tetromino_Base := (
+   O_Tetromino : constant Tetromino_Base := (
       Rot => ("...." &
               ".XX." &
               ".XX." &
@@ -104,7 +105,7 @@ package Tetrominos is
       )
    );
 
-   Tetromino_Z : constant Tetromino_Base := (
+   Z_Tetromino : constant Tetromino_Base := (
       Rot => ("...X" &
               "..XX" &
               "..X." &
@@ -132,7 +133,7 @@ package Tetrominos is
       )
    );
 
-   Tetromino_S : constant Tetromino_Base := (
+   S_Tetromino : constant Tetromino_Base := (
       Rot => ("..X." &
               "..XX" &
               "...X" &
@@ -160,7 +161,7 @@ package Tetrominos is
       )
    );
 
-   Tetromino_L : constant Tetromino_Base := (
+   L_Tetromino : constant Tetromino_Base := (
       Rot => ("..X." &
               "..X." &
               "..XX" &
@@ -188,7 +189,7 @@ package Tetrominos is
       )
    );
 
-   Tetromino_J : constant Tetromino_Base := (
+   J_Tetromino : constant Tetromino_Base := (
       Rot => ("...X" &
               "...X" &
               "..XX" &
@@ -219,9 +220,9 @@ package Tetrominos is
    type Tetrominos_Index is range 1 .. 7;
    type Tetrominos_Array is array (Tetrominos_Index) of Tetromino_Base;
    Tetromino_Bases : Tetrominos_Array := (
-      Tetromino_I, Tetromino_T, Tetromino_O, Tetromino_Z,
-      Tetromino_S, Tetromino_L, Tetromino_J
+      I_Tetromino, T_Tetromino, O_Tetromino, Z_Tetromino,
+      S_Tetromino, L_Tetromino, J_Tetromino
    );
 
 
-end Tetrominos;
+end Tetromino;
