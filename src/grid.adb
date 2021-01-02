@@ -2,6 +2,19 @@ with Interfaces.C; use Interfaces.C;
 
 package body Grid is
 
+   function Count_Blocks (G : Grid_T) return Natural is
+      Total : Natural := 0;
+   begin
+      for Y in G'Range loop
+         for X in G (Y)'Range loop
+            if G (Y) (X).Set then
+               Total := Total + 1;
+            end if;
+         end loop;
+      end loop;
+      return Total;
+   end Count_Blocks;
+
    function Block_Fits (G : Grid_T; Block : Character; X, Y : Integer)
       return Boolean is
    begin
@@ -60,6 +73,17 @@ package body Grid is
          First_Line (I).Set := False;
       end loop;
    end Remove_Line;
+
+   function Count_Full_Lines (G : Grid_T) return Natural is
+      Total : Natural := 0;
+   begin
+      for L in G'Range loop
+         if Is_Line_Full (G, L) then
+            Total := Total + 1;
+         end if;
+      end loop;
+      return Total;
+   end Count_Full_Lines;
 
    function Remove_Full_Lines (G : in out Grid_T) return Natural is
       Nb_Lines : Natural := 0;

@@ -18,6 +18,7 @@ package Tetromino is
       Rot : Rotation_Index := 1;
    end record;
 
+   function Equals (A, B : Tetromino_T) return Boolean;
    function Get_Random_Piece return Tetromino_Base;
    procedure Display (T : Tetromino_T; R : in out Renderer);
    procedure Rotate (T : in out Tetromino_T);

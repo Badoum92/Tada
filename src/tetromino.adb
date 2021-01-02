@@ -4,6 +4,16 @@ with Grid;
 
 package body Tetromino is
 
+   function Equals (A, B : Tetromino_T) return Boolean is
+   begin
+      for I in Rotation_Array'Range loop
+         if A.Base.Rot (I) /= B.Base.Rot (I) then
+            return False;
+         end if;
+      end loop;
+      return True;
+   end Equals;
+
    function Get_Random_Piece return Tetromino_Base is
       package Rand is new Ada.Numerics.Discrete_Random (Tetrominos_Index);
       use Rand;
