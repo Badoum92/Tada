@@ -9,7 +9,7 @@ package SDL_Wrapper is
 
    function Poll_Events (G : in out Game.Game_T) return Boolean;
    procedure Create_Window (Window : in out SDL.Video.Windows.Window;
-      Width, Height : Positive);
+      Width, Height : Positive; Title : String);
    procedure Create_Renderer (Renderer : in out SDL.Video.Renderers.Renderer;
       Window : in out SDL.Video.Windows.Window);
 

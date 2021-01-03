@@ -20,8 +20,6 @@ package body Game is
 
       if not Grid.Piece_Fits (G.Game_Grid, G.Cur_Piece) then
          G.Game_Over := True;
-         Put_Line ("GAME OVER");
-         Put_Line ("Press R to start a new game");
       end if;
    end Spawn_Piece;
 
@@ -44,11 +42,19 @@ package body Game is
       G.Cur_Lines := 0;
       G.Total_Delay := 1000;
       G.Current_Delay := 0;
-      Display_Terminal (G);
    end Init;
 
    procedure Handle_Input (G : in out Game_T; Key : Scan_Codes) is
    begin
+      if Key = Scan_Code_R then
+         Reset (G);
+         return;
+      end if;
+
+      if G.Game_Over then
+         return;
+      end if;
+
       if Key = Scan_Code_Left then
          Move_Piece_Proc (G, Left);
       elsif Key = Scan_Code_Right then
@@ -117,10 +123,6 @@ package body Game is
       elsif Nb_Lines = 4 then
          G.Score := G.Score + 800 * G.Level;
       end if;
-
-      if Nb_Lines /= 0 then
-         Display_Terminal (G);
-      end if;
    end Update_Score;
 
    procedure Display_Terminal (G : Game_T) is
@@ -136,6 +138,11 @@ package body Game is
       Put_Line ("------------");
       Put_Line ("Score: " & Uint64'Image (G.Score));
       Put_Line ("Level: " & Uint64'Image (G.Level));
+
+      if G.Game_Over then
+         Put_Line ("GAME OVER");
+         Put_Line ("Press R to start a new game");
+      end if;
    end Display_Terminal;
 
    procedure Display (G : Game_T; R : in out Renderer) is
@@ -154,7 +161,6 @@ package body Game is
          if G.Total_Delay > Speed_Up_Factor then
             G.Level := G.Level + 1;
             G.Total_Delay := G.Total_Delay - Speed_Up_Factor;
-            Display_Terminal (G);
          end if;
       end if;
    end Speed_Up;
@@ -163,10 +169,8 @@ package body Game is
    begin
       G.Current_Delay := G.Current_Delay + Time.Get_Delta_Time;
       if G.Current_Delay >= G.Total_Delay then
+         G.Current_Delay := G.Current_Delay - G.Total_Delay;
          Move_Piece_Proc (G, Down);
-         if G.Current_Delay /= 0 then
-            G.Current_Delay := G.Current_Delay - G.Total_Delay;
-         end if;
          Speed_Up (G);
       end if;
    end Update;

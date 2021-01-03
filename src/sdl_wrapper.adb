@@ -8,22 +8,17 @@ package body SDL_Wrapper is
          if Event.Common.Event_Type = SDL.Events.Quit then
             return True;
          elsif Event.Common.Event_Type = Key_Down then
-            if Event.Keyboard.Key_Sym.Scan_Code = Scan_Code_R then
-               Game.Reset (G);
-            end if;
-            if not Game.Is_Game_Over (G) then
-               Game.Handle_Input (G, Event.Keyboard.Key_Sym.Scan_Code);
-            end if;
+            Game.Handle_Input (G, Event.Keyboard.Key_Sym.Scan_Code);
          end if;
       end loop;
    return False;
    end Poll_Events;
 
    procedure Create_Window (Window : in out SDL.Video.Windows.Window;
-      Width, Height : Positive) is
+      Width, Height : Positive; Title : String) is
    begin
       SDL.Video.Windows.Makers.Create (Win    => Window,
-                                       Title  => "Tada - Tetris in Ada",
+                                       Title  => Title,
                                        X      => 0,
                                        Y      => 0,
                                        Width  => Width,

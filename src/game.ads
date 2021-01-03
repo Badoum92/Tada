@@ -19,7 +19,9 @@ package Game is
       Score : Uint64;
       Total_Delay : Uint64;
       Current_Delay : Uint64;
-   end record;
+   end record
+   with Dynamic_Predicate => Game_T.Current_Delay < Game_T.Total_Delay and
+                             Game_T.Total_Delay > 0;
 
    type Piece_Action is (Left, Right, Down, Rotate);
 
@@ -53,7 +55,7 @@ package Game is
    procedure Update (G : in out Game_T)
       with
       Pre => not G.Game_Over,
-      Post => G.Cur_Lines = G.Cur_Lines'Old + Grid.Count_Full_Lines (G.Game_Grid) or
-              G.Cur_Lines = G.Cur_Lines'Old + Grid.Count_Full_Lines (G.Game_Grid) - Lines_To_Next_Level;
+      Post => G.Current_Delay = G.Current_Delay'Old + Time.Get_Delta_Time or
+              G.Current_Delay = G.Current_Delay'Old + Time.Get_Delta_Time - G.Total_Delay'Old;
 
 end Game;
