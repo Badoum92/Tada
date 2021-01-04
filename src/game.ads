@@ -14,11 +14,11 @@ package Game is
       Game_Over : Boolean;
       Cur_Piece : Tetromino.Tetromino_T;
       Next_Piece : Tetromino.Tetromino_T;
-      Cur_Lines : Natural;
-      Level : Uint64;
-      Score : Uint64;
-      Total_Delay : Uint64;
-      Current_Delay : Uint64;
+      Cur_Lines : Natural := 0;
+      Level : Uint64 := 1;
+      Score : Uint64 := 0;
+      Total_Delay : Uint64 := 1000;
+      Current_Delay : Uint64 := 0;
    end record
    with Dynamic_Predicate => Game_T.Current_Delay < Game_T.Total_Delay and
                              Game_T.Total_Delay > 0;
